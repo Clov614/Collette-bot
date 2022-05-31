@@ -22,6 +22,11 @@ func BiliAnalysis(receive_msg string) (status bool, message string) {
 		rawUrl, bvid := handleCQcode(receive_msg)
 		getVideoinfo(bvid)
 		message = mergeTOcqcode(rawUrl)
+
+		if videoInfo.Data.Pic == "" {
+			return false, ""
+		}
+
 		return true, message
 	}
 	return
@@ -29,13 +34,29 @@ func BiliAnalysis(receive_msg string) (status bool, message string) {
 
 func BilirawUrlanalysis(receive_msg string) (status bool, message string) {
 
-	re, _ := regexp.Compile("https://www.bilibili.com/video/([\\s\\S]*?)?")
+	re, _ := regexp.Compile("https://www.bilibili.com/video/([\\S\\s]*)[?/]([\\s\\S]*)")
 	if re.MatchString(receive_msg) {
 		bvids := re.FindStringSubmatch(receive_msg)
 		bvid := bvids[1]
 		rawUrl := "https://www.bilibili.com/video/" + bvid
 		getVideoinfo(bvid)
 		message = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic == "" {
+			return false, ""
+		}
+		return true, message
+	}
+	// 验证单独的BVid
+	reBVid, _ := regexp.Compile("^BV([A-Za-z\\d]*)")
+	if reBVid.MatchString(receive_msg) {
+		bvids := reBVid.FindStringSubmatch(receive_msg)
+		bvid := bvids[0]
+		rawUrl := "https://www.bilibili.com/video/" + bvid
+		getVideoinfo(bvid)
+		message = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic == "" {
+			return false, ""
+		}
 		return true, message
 	}
 	return false, ""
