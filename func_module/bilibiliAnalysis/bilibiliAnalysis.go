@@ -17,7 +17,8 @@ var (
 
 func BiliAnalysis(receive_msg string) (status bool, message string) {
 	re, _ := regexp.Compile("\\[CQ:json,data={\"app\":\"com.tencent")
-	if re.MatchString(receive_msg) {
+	reBili, _ := regexp.Compile("\"desc\":\"哔哩哔哩\"")
+	if re.MatchString(receive_msg) && reBili.MatchString(receive_msg) {
 		rawUrl, bvid := handleCQcode(receive_msg)
 		getVideoinfo(bvid)
 		message = mergeTOcqcode(rawUrl)
