@@ -27,7 +27,7 @@ func main() {
 		wg.Wait()
 	}()
 
-	log.Info(fmt.Sprintf("反向ws启动，监听于 127.0.0.1:6700 ...."))
+	log.Info(fmt.Sprintf("正向ws启动，监听于 127.0.0.1:6700 ...."))
 	hub := ws.Hhub
 
 	// 消息监听器
