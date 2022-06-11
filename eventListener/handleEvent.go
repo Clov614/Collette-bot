@@ -51,7 +51,7 @@ func msgGroupEvent(Event []byte, hub *ws.Hub) {
 		// 替换特殊字符
 		newMsg := ChangeSpecialsymbols(msgevent.Message)
 		msgevent.Message = newMsg
-		log.Println("收到群组消息：", msgevent.Message)
+		log.Println("收到群组消息：", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
 		// status 为是否发送消息的flag
 		status, sendMsg := middleHandler.PostGROUPmsg(msgevent.GroupID, msgevent.Message)
 		if status == true {
@@ -73,8 +73,8 @@ func msgPrivateEvent(Event []byte, hub *ws.Hub) {
 		// 替换特殊字符
 		newMsg := ChangeSpecialsymbols(msgevent.Message)
 		msgevent.Message = newMsg
-		log.Println("收到私聊消息：", msgevent.Message)
-		status, sendMsg := middleHandler.PostPRIVATEmsg(msgevent.UserID, msgevent.Message)
+		log.Println("收到私聊消息：", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
+		status, sendMsg := middleHandler.PostPRIVATEmsg(msgevent.UserId, msgevent.Message)
 		if status == true {
 			hub.Sendmsg <- sendMsg
 		}

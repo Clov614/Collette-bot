@@ -4,6 +4,7 @@ import (
 	"Collette_bot/eventListener"
 	_ "Collette_bot/log"
 	"Collette_bot/network/ws"
+	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -34,7 +35,7 @@ func main() {
 	go func() {
 		wg.Add(1)
 		for v := range hub.Chmsg {
-			//HeartbeatFilter(string(v))
+			HeartbeatFilter(string(v))
 			eventListener.Listen(v, hub)
 		}
 	}()
@@ -51,12 +52,17 @@ func main() {
 	wg.Wait()
 }
 
+var metaData eventListener.MetaData
+
 // 心跳事件过滤
 func HeartbeatFilter(str string) {
+
 	re, _ := regexp.Compile("{\"interval\":5000,\"meta_event_type\":\"heartbeat\"")
 	if !re.MatchString(str) {
 		// 替换特殊字符
 		str = eventListener.ChangeSpecialsymbols(str)
-		log.Info(str)
+		//log.Info(str)
+		json.Unmarshal([]byte(str), &metaData)
+		log.Info(metaData.Post_type)
 	}
 }
