@@ -1,6 +1,7 @@
 package eventListener
 
 import (
+	"Collette_bot/BaseEvent"
 	"Collette_bot/eventListener/middleHandler"
 	"Collette_bot/network/ws"
 	"encoding/json"
@@ -10,14 +11,13 @@ import (
 )
 
 var (
-	loginevent LoginEvent
+	loginevent BaseEvent.LoginEvent
 )
 
 // 监听event
 func Listen(Event []byte, hub *ws.Hub) {
 	loginEvent(Event, hub)
-	msgGroupEvent(Event, hub)
-	msgPrivateEvent(Event, hub)
+	messageEvent(Event, hub)
 }
 
 // 监听登录事件
@@ -38,50 +38,55 @@ func loginEvent(Event []byte, hub *ws.Hub) {
 	return
 }
 
-// 监听群组消息事件
+// 处理群组消息事件
 func msgGroupEvent(Event []byte, hub *ws.Hub) {
-	//log.Info(string(Event))
-	msgevent := MsgGroupEvent{}
+	msgevent := BaseEvent.MsgGroupEvent{}
 	err := json.Unmarshal(Event, &msgevent)
 	if err != nil {
 		log.Error(err)
 	}
-	//log.Info(msgevent.MessageType)
-	if msgevent.MessageType == "group" {
-		// 替换特殊字符
-		newMsg := ChangeSpecialsymbols(msgevent.Message)
-		msgevent.Message = newMsg
-		log.Println("收到群组消息：", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
-		// status 为是否发送消息的flag
-		status, sendMsg := middleHandler.PostGROUPmsg(msgevent.GroupID, msgevent.Message)
-		if status == true {
-			hub.Sendmsg <- sendMsg
-		}
+	// 替换特殊字符
+	newMsg := ChangeSpecialsymbols(msgevent.Message)
+	msgevent.Message = newMsg
+	log.Printf("收到群组消息 ID:[%d] Name:[%s] Msg: %s", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
+	// status 为是否发送消息的flag
+	status, sendMsg := middleHandler.PostGROUPmsg(msgevent)
+	if status == true {
+		hub.Sendmsg <- sendMsg
 	}
 	return
 }
 
-// 监听私聊消息
+// 处理私聊消息
 func msgPrivateEvent(Event []byte, hub *ws.Hub) {
-	msgevent := MsgPrivateEvent{}
+	msgevent := BaseEvent.MsgPrivateEvent{}
 	err := json.Unmarshal(Event, &msgevent)
 	if err != nil {
 		log.Error(err)
 	}
-
-	if msgevent.MessageType == "private" {
-		// 替换特殊字符
-		newMsg := ChangeSpecialsymbols(msgevent.Message)
-		msgevent.Message = newMsg
-		log.Println("收到私聊消息：", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
-		status, sendMsg := middleHandler.PostPRIVATEmsg(msgevent.UserId, msgevent.Message)
-		if status == true {
-			hub.Sendmsg <- sendMsg
-		}
+	// 替换特殊字符
+	newMsg := ChangeSpecialsymbols(msgevent.Message)
+	msgevent.Message = newMsg
+	log.Printf("收到私聊消息 ID:[%d] Name:[%s] Msg: %s", msgevent.UserId, msgevent.Sender.Nickname, msgevent.Message)
+	status, sendMsg := middleHandler.PostPRIVATEmsg(msgevent)
+	if status == true {
+		hub.Sendmsg <- sendMsg
 	}
+}
 
-	return
-
+// 监听消息
+func messageEvent(Event []byte, hub *ws.Hub) {
+	msgEvent := BaseEvent.GeneralMsg{}
+	err := json.Unmarshal(Event, &msgEvent)
+	if err != nil {
+		log.Error(err)
+	}
+	if msgEvent.MessageType == "group" {
+		msgGroupEvent(Event, hub)
+	}
+	if msgEvent.MessageType == "private" {
+		msgPrivateEvent(Event, hub)
+	}
 }
 
 // 转换特殊符号

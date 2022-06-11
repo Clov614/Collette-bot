@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Collette_bot/BaseEvent"
 	"Collette_bot/eventListener"
 	_ "Collette_bot/log"
 	"Collette_bot/network/ws"
@@ -52,7 +53,7 @@ func main() {
 	wg.Wait()
 }
 
-var metaData eventListener.MetaData
+var metaData BaseEvent.MetaData
 
 // 心跳事件过滤
 func HeartbeatFilter(str string) {
@@ -63,6 +64,7 @@ func HeartbeatFilter(str string) {
 		str = eventListener.ChangeSpecialsymbols(str)
 		//log.Info(str)
 		json.Unmarshal([]byte(str), &metaData)
-		log.Info(metaData.Post_type)
+		// 测试使用，查看Post_type
+		//log.Info(metaData.Post_type)
 	}
 }
