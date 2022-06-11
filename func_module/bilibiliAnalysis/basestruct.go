@@ -126,7 +126,17 @@ type VideoInfo struct {
 	} `json:"data"`
 }
 
-type ShareDate struct {
+//type ShareData struct {
+//	App   string `json:"app"`
+//	Desc  string `json:"desc"`
+//	Extra struct {
+//		AppType int `json:"app_type"`
+//		Appid   int `json:"appid"`
+//		Uin     int `json:"uin"`
+//	} `json:"extra"`
+//}
+
+type ShareDateAndroid struct {
 	App    string `json:"app"`
 	Config struct {
 		AutoSize int    `json:"autoSize"`
@@ -170,4 +180,40 @@ type ShareDate struct {
 	Prompt            string `json:"prompt"`
 	Ver               string `json:"ver"`
 	View              string `json:"view"`
+}
+
+type ShareDataIos struct {
+	App    string `json:"app"`
+	Config struct {
+		Ctime   int    `json:"ctime"`
+		Forward bool   `json:"forward"`
+		Token   string `json:"token"`
+		Type    string `json:"type"`
+	} `json:"config"`
+	Desc  string `json:"desc"`
+	Extra struct {
+		AppType int `json:"app_type"`
+		Appid   int `json:"appid"`
+		Uin     int `json:"uin"`
+	} `json:"extra"`
+	Meta struct {
+		News struct {
+			Action         string `json:"action"`
+			AndroidPkgName string `json:"android_pkg_name"`
+			AppType        int    `json:"app_type"`
+			Appid          int    `json:"appid"`
+			Ctime          int    `json:"ctime"`
+			Desc           string `json:"desc"`
+			JumpURL        string `json:"jumpUrl"`
+			Preview        string `json:"preview"`
+			SourceIcon     string `json:"source_icon"`
+			SourceURL      string `json:"source_url"`
+			Tag            string `json:"tag"`
+			Title          string `json:"title"`
+			Uin            int    `json:"uin"`
+		} `json:"news"`
+	} `json:"meta"`
+	Prompt string `json:"prompt"`
+	Ver    string `json:"ver"`
+	View   string `json:"view"`
 }

@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	shareDate ShareDate
-	videoInfo VideoInfo
+	shareDateAndroid ShareDateAndroid
+	shareDataIos     ShareDataIos
+	videoInfo        VideoInfo
 )
 
 func BiliAnalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
@@ -21,7 +22,17 @@ func BiliAnalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsDat
 	re, _ := regexp.Compile("\\[CQ:json,data={\"app\":\"com.tencent")
 	reBili, _ := regexp.Compile("\"desc\":\"哔哩哔哩\"")
 	if re.MatchString(receive_msg) && reBili.MatchString(receive_msg) {
-		rawUrl, bvid := handleCQcode(receive_msg)
+		rawUrl, bvid := handleCQcode(receive_msg, "Android")
+		getVideoinfo(bvid)
+		dataCheck.SendMsg = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic != "" {
+			dataCheck.Status = true
+		}
+	}
+	reIos, _ := regexp.Compile("\\[CQ:json,data={\"app\":\"com.tencent.structmsg")
+	reBiliIos, _ := regexp.Compile("\"desc\":\"[\\s\\S]*哔哩哔哩\"")
+	if reIos.MatchString(receive_msg) && reBiliIos.MatchString(receive_msg) {
+		rawUrl, bvid := handleCQcode(receive_msg, "Ios")
 		getVideoinfo(bvid)
 		dataCheck.SendMsg = mergeTOcqcode(rawUrl)
 		if videoInfo.Data.Pic != "" {
@@ -59,12 +70,18 @@ func BilirawUrlanalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.Plug
 }
 
 // 处理[CQ: json date=...] 返回视频原链接和bvid
-func handleCQcode(receive_msg string) (rawUrl string, bvid string) {
+func handleCQcode(receive_msg string, _type string) (rawUrl string, bvid string) {
+	var qqdocurl string
 	re, _ := regexp.Compile("\\[CQ:json,data=([\\s\\S]*)]") // 注意: 使用非贪婪匹配防止内容减少
 	dates := re.FindStringSubmatch(receive_msg)
-	_ = json.Unmarshal([]byte(dates[1]), &shareDate)
-
-	qqdocurl := shareDate.Meta.Detail1.Qqdocurl
+	if _type == "Android" {
+		_ = json.Unmarshal([]byte(dates[1]), &shareDateAndroid)
+		qqdocurl = shareDateAndroid.Meta.Detail1.Qqdocurl
+	}
+	if _type == "Ios" {
+		_ = json.Unmarshal([]byte(dates[1]), &shareDataIos)
+		qqdocurl = shareDataIos.Meta.News.JumpURL
+	}
 	resp, err := grequests.Get(qqdocurl, nil)
 	if err != nil {
 		log.Error("getqqdocurl error: ", err)
