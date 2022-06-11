@@ -20,6 +20,14 @@ func init() {
 		time.Sleep(time.Second * 5)
 		log.Fatalln()
 	}
+	ReadYaml(&settingData, "./setting.yaml")
+	log.Info(settingData.Nickname)
+	if len(settingData.Nickname) == 0 {
+		log.Info("未配置setting.yaml")
+		log.Info("Nickname为空")
+		time.Sleep(time.Second * 5)
+		log.Fatalln()
+	}
 
 }
 
@@ -74,4 +82,3 @@ func WriteYamlAppend(_type interface{}, path string) {
 	file.Write(dataStr)
 	file.Close()
 }
-
