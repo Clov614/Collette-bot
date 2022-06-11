@@ -1,6 +1,7 @@
 package bilibiliAnalysis
 
 import (
+	"Collette_bot/BaseEvent"
 	"encoding/json"
 	"fmt"
 	"github.com/levigross/grequests"
@@ -15,36 +16,32 @@ var (
 	videoInfo VideoInfo
 )
 
-func BiliAnalysis(receive_msg string) (status bool, message string) {
+func BiliAnalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+	receive_msg := msgEvent.Message
 	re, _ := regexp.Compile("\\[CQ:json,data={\"app\":\"com.tencent")
 	reBili, _ := regexp.Compile("\"desc\":\"哔哩哔哩\"")
 	if re.MatchString(receive_msg) && reBili.MatchString(receive_msg) {
 		rawUrl, bvid := handleCQcode(receive_msg)
 		getVideoinfo(bvid)
-		message = mergeTOcqcode(rawUrl)
-
-		if videoInfo.Data.Pic == "" {
-			return false, ""
+		dataCheck.SendMsg = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic != "" {
+			dataCheck.Status = true
 		}
-
-		return true, message
 	}
-	return
 }
 
-func BilirawUrlanalysis(receive_msg string) (status bool, message string) {
-
+func BilirawUrlanalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+	receive_msg := msgEvent.Message
 	re, _ := regexp.Compile("https://www.bilibili.com/video/([\\S\\s]*)[?/]([\\s\\S]*)")
 	if re.MatchString(receive_msg) {
 		bvids := re.FindStringSubmatch(receive_msg)
 		bvid := bvids[1]
 		rawUrl := "https://www.bilibili.com/video/" + bvid
 		getVideoinfo(bvid)
-		message = mergeTOcqcode(rawUrl)
-		if videoInfo.Data.Pic == "" {
-			return false, ""
+		dataCheck.SendMsg = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic != "" {
+			dataCheck.Status = true
 		}
-		return true, message
 	}
 	// 验证单独的BVid
 	reBVid, _ := regexp.Compile("^BV([A-Za-z\\d]*)")
@@ -53,13 +50,12 @@ func BilirawUrlanalysis(receive_msg string) (status bool, message string) {
 		bvid := bvids[0]
 		rawUrl := "https://www.bilibili.com/video/" + bvid
 		getVideoinfo(bvid)
-		message = mergeTOcqcode(rawUrl)
-		if videoInfo.Data.Pic == "" {
-			return false, ""
+		dataCheck.SendMsg = mergeTOcqcode(rawUrl)
+		if videoInfo.Data.Pic != "" {
+			dataCheck.Status = true
 		}
-		return true, message
 	}
-	return false, ""
+
 }
 
 // 处理[CQ: json date=...] 返回视频原链接和bvid

@@ -1,17 +1,28 @@
-package eventListener
+package BaseEvent
+
+type MetaData struct {
+	Time      int    `json:"time"`
+	SelfID    int    `json:"self_id"`
+	Post_type string `json:"post_type"`
+}
+
+type GeneralMsg struct {
+	SubType     string `json:"sub_type"`
+	MessageID   int    `json:"message_id"`
+	UserId      int    `json:"user_id"`
+	Message     string `json:"message"`
+	RawMessage  string `json:"raw_message"`
+	Font        int    `json:"font"`
+	MessageType string `json:"message_type"`
+}
 
 type MsgGroupEvent struct {
-	Anonymous   interface{} `json:"anonymous"`
-	Font        int         `json:"font"`
-	GroupID     int         `json:"group_id"`
-	Message     string      `json:"message"`
-	MessageID   int         `json:"message_id"`
-	MessageSeq  int         `json:"message_seq"`
-	MessageType string      `json:"message_type"`
-	PostType    string      `json:"post_type"`
-	RawMessage  string      `json:"raw_message"`
-	SelfID      int         `json:"self_id"`
-	Sender      struct {
+	MetaData
+	GeneralMsg
+	Anonymous  interface{} `json:"anonymous"`
+	GroupID    int         `json:"group_id"`
+	MessageSeq int         `json:"message_seq"`
+	Sender     struct {
 		Age      int    `json:"age"`
 		Area     string `json:"area"`
 		Card     string `json:"card"`
@@ -22,29 +33,18 @@ type MsgGroupEvent struct {
 		Title    string `json:"title"`
 		UserID   int    `json:"user_id"`
 	} `json:"sender"`
-	SubType string `json:"sub_type"`
-	Time    int    `json:"time"`
-	UserID  int    `json:"user_id"`
 }
 
 type MsgPrivateEvent struct {
-	Font        int    `json:"font"`
-	Message     string `json:"message"`
-	MessageID   int    `json:"message_id"`
-	MessageType string `json:"message_type"`
-	PostType    string `json:"post_type"`
-	RawMessage  string `json:"raw_message"`
-	SelfID      int    `json:"self_id"`
-	Sender      struct {
+	MetaData
+	GeneralMsg
+	Sender struct {
 		Age      int    `json:"age"`
 		Nickname string `json:"nickname"`
 		Sex      string `json:"sex"`
 		UserID   int    `json:"user_id"`
 	} `json:"sender"`
-	SubType  string `json:"sub_type"`
-	TargetID int    `json:"target_id"`
-	Time     int    `json:"time"`
-	UserID   int    `json:"user_id"`
+	TargetID int `json:"target_id"`
 }
 
 type LoginEvent struct {
@@ -79,4 +79,9 @@ type HeartBeat struct {
 		} `json:"stat"`
 	} `json:"status"`
 	Time int `json:"time"`
+}
+
+type PluginsData struct {
+	Status  bool
+	SendMsg string
 }

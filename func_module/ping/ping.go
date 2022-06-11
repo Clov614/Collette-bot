@@ -1,13 +1,16 @@
 package ping
 
-func Ping(receive_msg string) (status bool, message string) {
-	status = false
-	message = "pong!"
-	switch receive_msg {
+import (
+	"Collette_bot/BaseEvent"
+)
+
+func Ping(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+	dataCheck.SendMsg = "pong!"
+	switch msgEvent.Message {
 	case "ping":
-		status = true
+		dataCheck.Status = true
 	case "Ping":
-		status = true
+		dataCheck.Status = true
 	}
 	return
 }
