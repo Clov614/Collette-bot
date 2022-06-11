@@ -5,6 +5,7 @@ import (
 	"Collette_bot/eventListener"
 	_ "Collette_bot/log"
 	"Collette_bot/network/ws"
+	_ "Collette_bot/setting"
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
