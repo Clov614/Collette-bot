@@ -25,18 +25,16 @@ func init() {
 	log.SetOutput(colorable.NewColorableStdout())
 
 	if !PathExists("./setting.yml") {
-		WriteYamlAppend(Data, "./setting.yml")
+		WriteYamlAppend(&Data, "./setting.yml")
 		log.Info("生成默认setting,yml成功")
 		log.Info("请配置setting.yml后重启程序...")
-		time.Sleep(time.Second * 5)
-		os.Exit(0)
+		os.Exit(3)
 	}
 	ReadYaml(&Data, "./setting.yml")
 	if len(Data.Nickname) == 0 {
 		log.Info("未配置setting.yml")
 		log.Info("Nickname为空")
-		time.Sleep(time.Second * 5)
-		os.Exit(0)
+		os.Exit(3)
 	}
 
 }
@@ -83,7 +81,7 @@ func WriteYamlAppend(_type interface{}, path string) {
 		log.Error("WriteYaml() Error: ", err)
 	}
 
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND, 0644)
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Error("WriteYaml() writeFile Error path: "+path, err)
 	}
