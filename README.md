@@ -30,6 +30,7 @@
 <details>
     <summary>主动功能</summary>
 
+- [X] queryMCstatus 查询mc服务器状态
 
 </details>
 
