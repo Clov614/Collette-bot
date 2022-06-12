@@ -4,9 +4,11 @@ import (
 	"Collette_bot/BaseEvent"
 	"Collette_bot/eventListener/middleHandler"
 	"Collette_bot/network/ws"
+	"Collette_bot/setting"
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"strings"
 )
 
@@ -35,6 +37,7 @@ func loginEvent(Event []byte, hub *ws.Hub) {
 	}
 	//hub.LoginSuccess <- true
 	log.Info(fmt.Sprintf("QQ: %v 连接gocqhttp成功！", loginevent.SelfID))
+	setting.Data.SelfQQ = strconv.Itoa(loginevent.SelfID)
 	return
 }
 

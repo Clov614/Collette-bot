@@ -17,7 +17,7 @@ var (
 	videoInfo        VideoInfo
 )
 
-func BiliAnalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+func BiliAnalysis(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 	receive_msg := msgEvent.Message
 	re, _ := regexp.Compile("\\[CQ:json,data={\"app\":\"com.tencent")
 	reBili, _ := regexp.Compile("\"desc\":\"哔哩哔哩\"")
@@ -41,7 +41,7 @@ func BiliAnalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsDat
 	}
 }
 
-func BilirawUrlanalysis(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+func BilirawUrlanalysis(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 	receive_msg := msgEvent.Message
 	re, _ := regexp.Compile("https://www.bilibili.com/video/([\\S\\s]*)[?/]([\\s\\S]*)")
 	if re.MatchString(receive_msg) {

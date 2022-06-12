@@ -4,7 +4,7 @@ import (
 	"Collette_bot/BaseEvent"
 )
 
-func Ping(msgEvent BaseEvent.GeneralMsg, dataCheck *BaseEvent.PluginsData) {
+func Ping(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 	dataCheck.SendMsg = "pong!"
 	switch msgEvent.Message {
 	case "ping":

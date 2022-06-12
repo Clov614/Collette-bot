@@ -1,5 +1,10 @@
 package BaseEvent
 
+type PluginsMsg struct {
+	MetaData
+	GeneralMsg
+}
+
 type MetaData struct {
 	Time      int    `json:"time"`
 	SelfID    int    `json:"self_id"`

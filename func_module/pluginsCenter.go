@@ -6,7 +6,7 @@ import (
 	"Collette_bot/func_module/ping"
 )
 
-func PluginsDetermine(msgEvent BaseEvent.GeneralMsg) (bool, string) {
+func PluginsDetermine(msgEvent BaseEvent.PluginsMsg) (bool, string) {
 	var checkData BaseEvent.PluginsData
 	// 在此添加新的功能模块
 	ping.Ping(msgEvent, &checkData)
