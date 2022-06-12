@@ -3,6 +3,7 @@ module Collette_bot
 go 1.18
 
 require (
+	github.com/PassTheMayo/mcstatus/v3 v3.1.1 // indirect
 	github.com/antonfisher/nested-logrus-formatter v1.3.1 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect

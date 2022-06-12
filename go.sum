@@ -1,3 +1,5 @@
+github.com/PassTheMayo/mcstatus/v3 v3.1.1 h1:bsSJKguov/rOov4zqDqRY0SpZ4/PCrQnfpQ8KLTHVzI=
+github.com/PassTheMayo/mcstatus/v3 v3.1.1/go.mod h1:loqJiYmaMVo9LmB77gYUcJBLnEkaHbOdSBGgKyX/Jgs=
 github.com/antonfisher/nested-logrus-formatter v1.3.1 h1:NFJIr+pzwv5QLHTPyKz9UMEoHck02Q9L0FP13b/xSbQ=
 github.com/antonfisher/nested-logrus-formatter v1.3.1/go.mod h1:6WTfyWFkBc9+zyBaKIqRrg/KwMqBbodBjgbHjDz7zjA=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

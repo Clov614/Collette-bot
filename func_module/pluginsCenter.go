@@ -4,6 +4,7 @@ import (
 	"Collette_bot/BaseEvent"
 	"Collette_bot/func_module/bilibiliAnalysis"
 	"Collette_bot/func_module/ping"
+	"Collette_bot/func_module/queryMCstatus"
 )
 
 func PluginsDetermine(msgEvent BaseEvent.PluginsMsg) (bool, string) {
@@ -15,6 +16,8 @@ func PluginsDetermine(msgEvent BaseEvent.PluginsMsg) (bool, string) {
 	bilibiliAnalysis.BiliAnalysis(msgEvent, &checkData)
 
 	bilibiliAnalysis.BilirawUrlanalysis(msgEvent, &checkData)
+
+	queryMCstatus.QuerymcStatus(msgEvent, &checkData)
 	// 向内层进行通信
 	if checkData.Status {
 		return true, checkData.SendMsg
