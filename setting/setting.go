@@ -24,16 +24,16 @@ func init() {
 	})
 	log.SetOutput(colorable.NewColorableStdout())
 
-	if !PathExists("./setting.yaml") {
-		WriteYamlAppend(Data, "./setting.yaml")
-		log.Info("生成默认setting,yaml成功")
-		log.Info("请配置setting.yaml后重启程序...")
+	if !PathExists("./setting.yml") {
+		WriteYamlAppend(Data, "./setting.yml")
+		log.Info("生成默认setting,yml成功")
+		log.Info("请配置setting.yml后重启程序...")
 		time.Sleep(time.Second * 5)
 		log.Fatalln()
 	}
-	ReadYaml(&Data, "./setting.yaml")
+	ReadYaml(&Data, "./setting.yml")
 	if len(Data.Nickname) == 0 {
-		log.Info("未配置setting.yaml")
+		log.Info("未配置setting.yml")
 		log.Info("Nickname为空")
 		time.Sleep(time.Second * 5)
 		log.Fatalln()
