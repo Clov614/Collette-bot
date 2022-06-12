@@ -32,7 +32,6 @@ func init() {
 		log.Fatalln()
 	}
 	ReadYaml(&Data, "./setting.yaml")
-	log.Info(Data.Nickname)
 	if len(Data.Nickname) == 0 {
 		log.Info("未配置setting.yaml")
 		log.Info("Nickname为空")
