@@ -1,6 +1,8 @@
 package setting
 
 import (
+	nested "github.com/antonfisher/nested-logrus-formatter"
+	"github.com/mattn/go-colorable"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -9,20 +11,29 @@ import (
 )
 
 var (
-	settingData SettingData
+	Data SettingData
 )
 
 func init() {
+	// 设置log格式
+	log.SetFormatter(&nested.Formatter{
+		NoColors:        true,
+		ShowFullLevel:   true,
+		HideKeys:        true,
+		TimestampFormat: time.RFC3339,
+	})
+	log.SetOutput(colorable.NewColorableStdout())
+
 	if !PathExists("./setting.yaml") {
-		WriteYamlAppend(settingData, "./setting.yaml")
+		WriteYamlAppend(Data, "./setting.yaml")
 		log.Info("生成默认setting,yaml成功")
 		log.Info("请配置setting.yaml后重启程序...")
 		time.Sleep(time.Second * 5)
 		log.Fatalln()
 	}
-	ReadYaml(&settingData, "./setting.yaml")
-	log.Info(settingData.Nickname)
-	if len(settingData.Nickname) == 0 {
+	ReadYaml(&Data, "./setting.yaml")
+	log.Info(Data.Nickname)
+	if len(Data.Nickname) == 0 {
 		log.Info("未配置setting.yaml")
 		log.Info("Nickname为空")
 		time.Sleep(time.Second * 5)
