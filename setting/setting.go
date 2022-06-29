@@ -36,7 +36,9 @@ func init() {
 		log.Info("Nickname为空")
 		os.Exit(3)
 	}
-
+	if len(Data.Admin) == 0 {
+		log.Info("[WARN]: 未设置管理员账号(一些功能可能有影响)")
+	}
 }
 
 func PathExists(path string) bool {
@@ -57,7 +59,7 @@ func WriteYaml(_type interface{}, path string) {
 		log.Error("WriteYaml() Error: ", err)
 	}
 
-	err = ioutil.WriteFile(path, dataStr, 0644)
+	err = ioutil.WriteFile(path, dataStr, 0666)
 	if err != nil {
 		log.Error("WriteYaml() writeFile Error path: "+path, err)
 	}
@@ -85,7 +87,7 @@ func WriteYamlAppend(_type interface{}, path string) {
 	if err != nil {
 		log.Error("WriteYaml() writeFile Error path: "+path, err)
 	}
-	helpStr := "# Nickname为机器人昵称\n# SelfQQ为机器人QQ号\n"
+	helpStr := "# Nickname为机器人昵称[列表]\n# SelfQQ为机器人QQ号\n# Admin为机器人管理员QQ账号[列表]（支持多个管理员）\n"
 	file.Write([]byte(helpStr))
 	file.Write(dataStr)
 	file.Close()
