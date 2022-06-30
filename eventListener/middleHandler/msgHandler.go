@@ -24,6 +24,7 @@ func PostGROUPmsg(msgEvent BaseEvent.MsgGroupEvent) (bool, SendAPI.SENDGROUPMSG)
 	// 组合Meta General message =
 	pluginsMsg.GeneralMsg = msgEvent.GeneralMsg
 	pluginsMsg.MetaData = msgEvent.MetaData
+	pluginsMsg.GroupID = msgEvent.GroupID
 	// 交由功能判断器进行处理
 	done, message := func_module.PluginsDetermine(pluginsMsg)
 	if done {

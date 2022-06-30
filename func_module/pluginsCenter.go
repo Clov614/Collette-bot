@@ -4,6 +4,7 @@ import (
 	"Collette_bot/BaseEvent"
 	"Collette_bot/func_module/adminFunc"
 	"Collette_bot/func_module/bilibiliAnalysis"
+	"Collette_bot/func_module/manageSubs"
 	"Collette_bot/func_module/ping"
 	"Collette_bot/func_module/queryMCstatus"
 	"Collette_bot/setting"
@@ -48,6 +49,9 @@ func PluginsDetermine(msgEvent BaseEvent.PluginsMsg) (bool, string) {
 	//queryMCstatus.QuerymcStatus(msgEvent, &checkData)
 	checkFUNCstatus("querymcStatus", queryMCstatus.QuerymcStatus, msgEvent, &checkData)
 
+	// 订阅相关
+	manageSubs.AddSubMC(msgEvent, &checkData)
+	manageSubs.DelSubMC(msgEvent, &checkData)
 	// 向内层进行通信
 	if checkData.Status {
 		return true, checkData.SendMsg

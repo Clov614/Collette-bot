@@ -2,6 +2,7 @@ package main
 
 import (
 	"Collette_bot/BaseEvent"
+	"Collette_bot/Subs"
 	"Collette_bot/eventListener"
 	_ "Collette_bot/log"
 	"Collette_bot/network/ws"
@@ -42,6 +43,12 @@ func main() {
 		}
 	}()
 
+	// 消息订阅器
+	go func() {
+		for {
+			Subs.SubscribeHandle(hub)
+		}
+	}()
 	// 消息发送器
 	go func() {
 		for v := range hub.Sendmsg {

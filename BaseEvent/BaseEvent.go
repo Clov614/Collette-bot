@@ -3,6 +3,7 @@ package BaseEvent
 type PluginsMsg struct {
 	MetaData
 	GeneralMsg
+	GroupID int `json:"group_id"`
 }
 
 type MetaData struct {
