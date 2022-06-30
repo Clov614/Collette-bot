@@ -5,6 +5,7 @@ import (
 	"Collette_bot/Subs"
 	"Collette_bot/setting"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -13,17 +14,15 @@ func DelSubMC(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 	if existInSlice(setting.Data.Admin, msgEvent.UserId) {
 		reAdd, _ := regexp.Compile("删除订阅")
 		SubMC := Subs.SubMC
-		if msgEvent.MessageType == "group" {
-			SubMC.UserIds = DeleteSlice(SubMC.UserIds, msgEvent.UserId)
-		} else {
-			SubMC.GroupIDs = DeleteSlice(SubMC.GroupIDs, msgEvent.GroupID)
-		}
 
 		if reAdd.MatchString(receiveMsg) {
 			splitMsg := strings.Split(receiveMsg, " ")
 			addrSrv := splitMsg[1]
-			SubMC.AddrSrv = DeleteSliceStr(SubMC.AddrSrv, addrSrv)
-
+			if msgEvent.MessageType == "group" {
+				delete(SubMC.Each, strconv.Itoa(msgEvent.GroupID)+addrSrv)
+			} else {
+				delete(SubMC.Each, strconv.Itoa(msgEvent.UserId)+addrSrv)
+			}
 			dataCheck.Status = true
 			dataCheck.SendMsg = "删除订阅成功: " + addrSrv
 			setting.WriteYaml(SubMC, "./Source/SubMC.yml")

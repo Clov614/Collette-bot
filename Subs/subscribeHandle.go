@@ -21,13 +21,16 @@ import (
 //}
 
 // 订阅MC服务器信息
+type SubsMcSrvInfos struct {
+	Each map[string]SubsMcSrvInfo `json:"each"`
+}
 type SubsMcSrvInfo struct {
-	UserIds   []int               `json:"user_ids"`
-	GroupIDs  []int               `json:"group_ids"`
-	AddrSrv   []string            `json:"addr_srv"`
-	Interval  int64               `json:"interval"`
-	TempTime  int64               `json:"tempTime"`
-	TempInfos map[string]TempInfo `json:"temp_infos"`
+	UserId   int      `json:"userId"`
+	GroupID  int      `json:"groupID"`
+	AddrSrv  string   `json:"addrSrv"`
+	Interval int64    `json:"interval"`
+	TempTime int64    `json:"tempTime"`
+	TempInfo TempInfo `json:"temp_infos"`
 }
 
 type TempInfo struct {
@@ -39,7 +42,7 @@ var (
 	sendprivateMsg SendAPI.SENDPRIVATEMSG
 	//pluginsMsg     BaseEvent.PluginsMsg
 	//SubBaseinfo SubBaseInfo
-	SubMC SubsMcSrvInfo
+	SubMC SubsMcSrvInfos
 )
 
 func init() {
@@ -48,10 +51,6 @@ func init() {
 	//	Interval:  60, // 默认订阅心跳为一分钟(节省性能开销)
 	//}
 	if !setting.PathExists("./Source/SubMC.yml") {
-		SubMC = SubsMcSrvInfo{
-			Interval: 60,
-			TempTime: time.Now().Unix(),
-		}
 		if !setting.PathExists("./Source") {
 			err := os.Mkdir("./Source", 0666)
 			if err != nil {
@@ -69,41 +68,42 @@ func SubscribeHandle(hub *ws.Hub) {
 	SubMC.SubsMcServerInfo(hub)
 }
 
-func (SubMc *SubsMcSrvInfo) SubsMcServerInfo(hub *ws.Hub) {
-	// 设置订阅更新间隔
-	heartBeat := SubMc.Interval
-	heartBeatD := time.Duration(heartBeat) * time.Second
-	time.Sleep(heartBeatD)
-
+func (SubMc *SubsMcSrvInfos) SubsMcServerInfo(hub *ws.Hub) {
 	// 读取
 	setting.ReadYaml(&SubMC, "./Source/SubMC.yml")
-	// 设置条件满足更新订阅
 
-	// 遍历每个服务器地址
-	for _, v := range SubMc.AddrSrv {
+	if len(SubMc.Each) == 0 {
+		return
+	}
+	// 遍历每个id
+	for i, v := range SubMc.Each {
 		// 防止Players为空
-		if strconv.Itoa(SubMC.TempInfos[v].Players) == "" {
-			SubMc.TempInfos[v] = TempInfo{
+		if strconv.Itoa(SubMc.Each[i].TempInfo.Players) == "" {
+			v.TempInfo = TempInfo{
 				Players: 0,
 			}
 		}
-
-		// 获取到Mc服务器信息，以及当前玩家数量
-
-		mcInfoMsg, nowPlayer, err := queryMcStatus(v, SubMc.TempInfos[v].Players)
-		if err != nil {
-			return
-		}
-		if nowPlayer-SubMc.TempInfos[v].Players != 0 {
-			SubMc.TempInfos[v] = TempInfo{
-				Players: nowPlayer,
+		// 验证是否满足间隔时间，执行订阅内容
+		// 设置订阅更新间隔
+		if (time.Now().Unix() - v.TempTime) >= v.Interval {
+			v.TempTime = time.Now().Unix()
+			// 获取到Mc服务器信息，以及当前玩家数量
+			mcInfoMsg, nowPlayer, err := queryMcStatus(v.AddrSrv, v.TempInfo.Players)
+			if err != nil {
+				return
 			}
-			setting.WriteYaml(&SubMc, "./Source/SubMC.yml")
-			for _, v := range SubMc.UserIds {
-				sendMsg("private", hub, mcInfoMsg, v, 0)
-			}
-			for _, v := range SubMc.GroupIDs {
-				sendMsg("group", hub, mcInfoMsg, 0, v)
+			// 设置条件满足更新订阅
+			if nowPlayer-v.TempInfo.Players != 0 {
+				v.TempInfo = TempInfo{
+					Players: nowPlayer,
+				}
+				SubMc.Each[i] = v
+				setting.WriteYaml(&SubMc, "./Source/SubMC.yml")
+				if i == (strconv.Itoa(v.UserId) + v.AddrSrv) {
+					sendMsg("private", hub, mcInfoMsg, v.UserId, 0)
+				} else {
+					sendMsg("group", hub, mcInfoMsg, 0, v.GroupID)
+				}
 			}
 		}
 	}

@@ -12,6 +12,7 @@ import (
 )
 
 func AddSubMC(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
+	var Interval int64 = 60
 	receiveMsg := msgEvent.Message
 	if existInSlice(setting.Data.Admin, msgEvent.UserId) {
 		reAdd, _ := regexp.Compile("添加订阅")
@@ -26,25 +27,26 @@ func AddSubMC(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 					return
 				}
 				if interval >= 1 && interval <= 120 {
-					SubMC.Interval = int64(interval * 60)
+					Interval = int64(interval * 60)
 				}
-				SubMC.TempTime = time.Now().Unix()
-
-			}
-			if !existInSliceStr(SubMC.AddrSrv, addrSrv) {
-				SubMC.AddrSrv = append(SubMC.AddrSrv, addrSrv)
 			}
 			if msgEvent.MessageType == "group" {
-				if !existInSlice(SubMC.GroupIDs, msgEvent.GroupID) {
-					SubMC.GroupIDs = append(SubMC.GroupIDs, msgEvent.GroupID)
+				SubMC.Each[strconv.Itoa(msgEvent.GroupID)+addrSrv] = Subs.SubsMcSrvInfo{
+					GroupID:  msgEvent.GroupID,
+					UserId:   0,
+					Interval: Interval,
+					TempTime: time.Now().Unix(),
+					AddrSrv:  addrSrv,
 				}
 			} else {
-				if !existInSlice(SubMC.UserIds, msgEvent.UserId) {
-					SubMC.UserIds = append(SubMC.UserIds, msgEvent.UserId)
+				SubMC.Each[strconv.Itoa(msgEvent.UserId)+addrSrv] = Subs.SubsMcSrvInfo{
+					GroupID:  0,
+					UserId:   msgEvent.UserId,
+					Interval: Interval,
+					TempTime: time.Now().Unix(),
+					AddrSrv:  addrSrv,
 				}
-
 			}
-
 			dataCheck.Status = true
 			dataCheck.SendMsg = "添加订阅成功: " + addrSrv
 			setting.WriteYaml(SubMC, "./Source/SubMC.yml")
