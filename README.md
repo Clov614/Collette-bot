@@ -23,6 +23,7 @@
     <summary>被动功能</summary>
 
 - [X] BilBili分享链接解析
+- [X] MC服务器信息变动订阅
 
 
 </details>
@@ -31,6 +32,7 @@
     <summary>主动功能</summary>
 
 - [X] queryMCstatus 查询mc服务器状态
+- [x] MC服务器订阅管理(添加订阅and删除订阅)
 
 </details>
 
