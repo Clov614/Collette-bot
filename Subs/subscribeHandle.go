@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/PassTheMayo/mcstatus/v3"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"strconv"
 	"time"
 )
@@ -50,7 +51,13 @@ func init() {
 		SubMC = SubsMcSrvInfo{
 			Interval: 60,
 			TempTime: time.Now().Unix(),
-			AddrSrv:  []string{"mc.taiga.icu"},
+		}
+		if !setting.PathExists("./Source") {
+			err := os.Mkdir("./Source", 0666)
+			if err != nil {
+				log.Error(err)
+				os.Exit(0666)
+			}
 		}
 		setting.WriteYaml(SubMC, "./Source/SubMC.yml")
 	}

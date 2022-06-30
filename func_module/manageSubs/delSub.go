@@ -5,7 +5,6 @@ import (
 	"Collette_bot/Subs"
 	"Collette_bot/setting"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -14,8 +13,7 @@ func DelSubMC(msgEvent BaseEvent.PluginsMsg, dataCheck *BaseEvent.PluginsData) {
 	if existInSlice(setting.Data.Admin, msgEvent.UserId) {
 		reAdd, _ := regexp.Compile("删除订阅")
 		SubMC := Subs.SubMC
-		groupId := strconv.Itoa(msgEvent.GroupID)
-		if groupId != "" {
+		if msgEvent.MessageType == "group" {
 			SubMC.UserIds = DeleteSlice(SubMC.UserIds, msgEvent.UserId)
 		} else {
 			SubMC.GroupIDs = DeleteSlice(SubMC.GroupIDs, msgEvent.GroupID)
