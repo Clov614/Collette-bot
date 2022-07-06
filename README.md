@@ -33,6 +33,7 @@
 
 - [X] queryMCstatus 查询mc服务器状态
 - [x] MC服务器订阅管理(添加订阅and删除订阅)
+- [X] 以图搜番(trace_moe api)
 
 </details>
 
