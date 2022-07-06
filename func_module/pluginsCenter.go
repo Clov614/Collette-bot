@@ -7,6 +7,7 @@ import (
 	"Collette_bot/func_module/manageSubs"
 	"Collette_bot/func_module/ping"
 	"Collette_bot/func_module/queryMCstatus"
+	"Collette_bot/func_module/traceMoe"
 	"Collette_bot/setting"
 	log "github.com/sirupsen/logrus"
 )
@@ -16,6 +17,7 @@ var (
 		"ping":             true,
 		"bilibiliAnalysis": true,
 		"querymcStatus":    true,
+		"traceMoe":         true,
 	}}
 )
 
@@ -45,6 +47,7 @@ func PluginsDetermine(msgEvent BaseEvent.PluginsMsg) (bool, string) {
 	//bilibiliAnalysis.BilirawUrlanalysis(msgEvent, &checkData)
 	checkFUNCstatus("bilibiliAnalysis", bilibiliAnalysis.BiliAnalysis, msgEvent, &checkData)
 	checkFUNCstatus("bilibiliAnalysis", bilibiliAnalysis.BilirawUrlanalysis, msgEvent, &checkData)
+	checkFUNCstatus("traceMoe", traceMoe.TraceMoe, msgEvent, &checkData)
 
 	//queryMCstatus.QuerymcStatus(msgEvent, &checkData)
 	checkFUNCstatus("querymcStatus", queryMCstatus.QuerymcStatus, msgEvent, &checkData)
