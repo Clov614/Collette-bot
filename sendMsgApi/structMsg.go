@@ -20,3 +20,11 @@ type SENDPRIVATEMSG struct {
 	} `json:"params"`
 	Echo string `json:"echo"`
 }
+
+type DELETEMSG struct {
+	Action string `json:"action"`
+	Params struct {
+		Messageid int `json:"message_id"`
+	}
+	Echo string `json:"echo"`
+}

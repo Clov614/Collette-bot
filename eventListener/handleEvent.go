@@ -92,6 +92,19 @@ func messageEvent(Event []byte, hub *ws.Hub) {
 	}
 }
 
+// 新增通用上报事件支持
+func GeneralmsgEvent(Event []byte, hub *ws.Hub) {
+	GeneralEvent := BaseEvent.GeneralMsg{}
+	err := json.Unmarshal(Event, &GeneralEvent)
+	if err != nil {
+		log.Error(err)
+	}
+	status, postMsg := middleHandler.DeleteMsg(GeneralEvent)
+	if status == true {
+		hub.Sendmsg <- postMsg
+	}
+}
+
 // 转换特殊符号
 func ChangeSpecialsymbols(oldMessage string) (newMessage string) {
 	var (

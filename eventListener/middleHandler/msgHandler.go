@@ -10,6 +10,7 @@ var (
 	sendgroupMsg   SendAPI.SENDGROUPMSG
 	sendprivateMsg SendAPI.SENDPRIVATEMSG
 	pluginsMsg     BaseEvent.PluginsMsg
+	delMsg         SendAPI.DELETEMSG
 )
 
 // 将消息处理为待发送JSON_struct  内层判断消息以及回复消息 返回sendMsgApi.SENDGROUPMSG
@@ -52,4 +53,10 @@ func PostPRIVATEmsg(msgEvent BaseEvent.MsgPrivateEvent) (bool, SendAPI.SENDPRIVA
 		return false, SendAPI.SENDPRIVATEMSG{}
 	}
 
+}
+
+// 删除操作处理器
+func DeleteMsg(msgEvent BaseEvent.GeneralMsg) (bool, SendAPI.DELETEMSG) {
+	delMsg.Action = "delete_msg"
+	return false, SendAPI.DELETEMSG{}
 }
